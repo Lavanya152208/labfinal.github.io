@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Ticket Booking</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            text-align: center;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            width: 60%;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        select, input[type="text"], input[type="email"], input[type="number"] {
+            padding: 8px;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #218838;
+        }
+        .seat-selection {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .seat {
+            width: 30px;
+            height: 30px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .seat.selected {
+            background-color: #ffc107;
+        }
+        .seat.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Movie Ticket Booking</h1>
+
+    <form id="bookingForm">
+        <div class="form-group">
+            <label for="movie">Choose Movie:</label>
+            <select name="movie" id="movie">
+                <option value="devara">Devara</option>
+                <option value="pushpa2">Pushpa 2</option>
+                <option value="hi-nanna">Hi Nanna</option>
+                <option value="hello">Hello</option>
+                <option value="nenu-local">Nenu Local</option>
+                <option value="ninu-kori">Ninu Kori</option>
+                <option value="usara-valli">Usara Valli</option>
+                <option value="rrr">RRR</option>
+                <option value="sita-ram">Sita Ram</option>
+                <option value="jaya-janaki-nayaka">Jaya Janaki Nayaka</option>
+                <option value="jai-lava-kusa">Jai Lava Kusa</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="showtime">Select Showtime:</label>
+            <select name="showtime" id="showtime">
+                <option value="10am">10:00 AM</option>
+                <option value="1pm">1:00 PM</option>
+                <option value="4pm">4:00 PM</option>
+                <option value="7pm">7:00 PM</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="seats">Select Number of Seats:</label>
+            <input type="number" id="seats" name="seats" min="1" max="5" value="1">
+        </div>
+
+        <div class="form-group">
+            <label for="name">Your Name:</label>
+            <input type="text" id="name" name="name" required placeholder="Enter your name">
+        </div>
+
+        <div class="form-group">
+            <label for="email">Your Email:</label>
+            <input type="email" id="email" name="email" required placeholder="Enter your email">
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Your Phone Number:</label>
+            <input type="text" id="phone" name="phone" required placeholder="Enter your phone number">
+        </div>
+
+        <div class="form-group">
+            <label>Choose Your Seats:</label>
+            <div class="seat-selection" id="seatSelection">
+                <div class="seat" id="seat1">1</div>
+                <div class="seat" id="seat2">2</div>
+                <div class="seat" id="seat3">3</div>
+                <div class="seat" id="seat4">4</div>
+                <div class="seat" id="seat5">5</div>
+                <!-- Add more seats if needed -->
+            </div>
+        </div>
+
+        <button type="button" class="btn" onclick="bookTickets()">Book Tickets</button>
+    </form>
+
+    <div class="footer">
+        <p>By booking, you agree to our <a href="#">Terms & Conditions</a>.</p>
+    </div>
+
+    <script>
+        // Seat selection functionality
+        const seats = document.querySelectorAll('.seat');
+        let selectedSeats = [];
+
+        seats.forEach(seat => {
+            seat.addEventListener('click', () => {
+                if (seat.classList.contains('disabled')) return; // Don't allow selecting disabled seats
+                seat.classList.toggle('selected');
+                const seatNumber = seat.id.replace('seat', '');
+                
+                if (seat.classList.contains('selected')) {
+                    selectedSeats.push(seatNumber);
+                } else {
+                    selectedSeats = selectedSeats.filter(num => num !== seatNumber);
+                }
+                document.getElementById('seats').value = selectedSeats.length;
+            });
+        });
+
+        // Function to handle booking
+        function bookTickets() {
+            const movie = document.getElementById('movie').value;
+            const showtime = document.getElementById('showtime').value;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const selectedSeatsCount = selectedSeats.length;
+
+            if (selectedSeatsCount === 0) {
+                alert('Please select at least one seat.');
+                return;
+            }
+
+            alert(`Booking Successful!\nMovie: ${movie}\nShowtime: ${showtime}\nSeats: ${selectedSeats.join(', ')}\nName: ${name}\nEmail: ${email}\nPhone: ${phone}`);
+            // Reset the form after booking
+            document.getElementById('bookingForm').reset();
+            selectedSeats = [];
+            seats.forEach(seat => seat.classList.remove('selected'));
+        }
+    </script>
+</body>
+</html>
